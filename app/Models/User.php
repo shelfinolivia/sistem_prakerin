@@ -5,10 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Filament\Panel; // Pastikan ini ditambahkan
-use Filament\Models\Contracts\FilamentUser;
-
-class User extends Authenticatable implements FilamentUser
+class User extends Authenticatable 
 {
     use HasFactory, Notifiable;
 
@@ -31,13 +28,5 @@ class User extends Authenticatable implements FilamentUser
             'password' => 'hashed',
             'is_admin' => 'boolean',
         ];
-    }
-
-    /**
-     * Menentukan apakah user bisa mengakses Filament Admin.
-     */
-    public function canAccessPanel(Panel $panel): bool
-    {
-        return $this->is_admin; // Hanya admin yang bisa masuk
     }
 }
