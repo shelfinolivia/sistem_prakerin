@@ -9,13 +9,17 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
-    {
-        Schema::create('reports', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
-        });
-    }
+    public function up()
+{
+    Schema::create('reports', function (Blueprint $table) {
+        $table->id();
+        $table->string('nama_file');
+        $table->string('file_path');
+        $table->enum('status', ['belum dikirim', 'terkirim'])->default('belum dikirim');
+        $table->timestamps();
+    });
+}
+
 
     /**
      * Reverse the migrations.

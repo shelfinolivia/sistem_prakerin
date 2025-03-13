@@ -12,14 +12,14 @@ return new class extends Migration
     public function up()
 {
     Schema::table('reports', function (Blueprint $table) {
-        $table->string('nama_file')->after('id'); // Menambahkan nama_file
+        $table->string('file_path')->after('nama_file'); // Tambahkan kolom file_path
     });
 }
 
 public function down()
 {
     Schema::table('reports', function (Blueprint $table) {
-        $table->dropColumn('nama_file');
+        $table->dropColumn('file_path');
     });
 }
 

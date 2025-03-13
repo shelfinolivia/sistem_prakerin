@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Report; 
+use App\Models\Report;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -10,8 +10,8 @@ class ReportController extends Controller
 {
     public function showForm()
     {
-        $reports = Report::all(); // Mengambil semua laporan dari database
-        return view('report.upload', compact('reports')); // Mengirimkan $reports ke view
+        $reports = Report::latest()->get(); // Ambil semua laporan terbaru
+        return view('report.upload', compact('reports')); // Kirim data ke view
     }
 
     public function upload(Request $request)
@@ -21,19 +21,19 @@ class ReportController extends Controller
         ]);
 
         $file = $request->file('report');
-        $fileName = time() . '_' . $file->getClientOriginalName(); // Generate nama unik
+        $fileName = time() . '_' . $file->getClientOriginalName(); // Buat nama unik
         $path = $file->storeAs('reports', $fileName, 'public'); // Simpan ke storage
 
         // Simpan ke database
         Report::create([
-            'nama_file' => $fileName, // Simpan nama file
+            'nama_file' => $fileName,
             'file_path' => $path,
-            'status' => 'belum dikirim', // Default status
+            'status' => 'belum dikirim',
         ]);
 
         return redirect()->route('report.form')->with('success', 'Laporan berhasil diunggah.');
     }
-    
+
     public function delete($id)
     {
         $report = Report::findOrFail($id);

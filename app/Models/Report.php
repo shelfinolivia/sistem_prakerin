@@ -9,5 +9,9 @@ class Report extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['nama_file', 'file_path', 'status'];
+    protected $fillable = [
+        'nama_file',
+        'file_path',
+        'status', // 'belum dikirim' atau 'terkirim'
+    ];
 }

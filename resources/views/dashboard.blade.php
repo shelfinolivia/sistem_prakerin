@@ -1,105 +1,105 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Siswa</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/js/all.min.js" crossorigin="anonymous"></script>
-    {{-- <script>
-        function showSection(section, element) {
-            document.getElementById('ajukan-magang').style.display = 'none';
-            document.getElementById('unggah-laporan').style.display = 'none';
-            document.getElementById('informasi-magang').style.display = 'none';
-            document.getElementById('status-pengajuan').style.display = 'none';
+@extends('layouts.app')
 
-            if (section === 'dashboard') {
-                document.getElementById('informasi-magang').style.display = 'block';
-                document.getElementById('status-pengajuan').style.display = 'block';
-            } else {
-                document.getElementById(section).style.display = 'block';
-            }
+@section('content')
+<!-- Tombol Toggle Sidebar -->
+<div id="menu-icon" class="fixed left-5 top-5 text-2xl text-white bg-blue-900 p-3 rounded-full cursor-pointer transition-all duration-300 hidden" onclick="toggleSidebar()">
+    <i class="fa-solid fa-bars"></i>
+</div> 
 
-            let menuItems = document.querySelectorAll('.sidebar-item');
-            menuItems.forEach(item => item.classList.remove('bg-blue-700'));
-            element.classList.add('bg-blue-700');
-        }
-
-        window.onload = function () {
-            let dashboardMenu = document.querySelector('.sidebar-item');
-            dashboardMenu.click();
-        };
-    </script>  --}}
-    <style>
-        .sidebar-open { margin-left: 16rem; transition: margin-left 0.3s; }
-        .sidebar-closed { margin-left: 0; transition: margin-left 0.3s; }
-    </style>
-</head>
-<body class="bg-gray-100 h-screen flex">
-
-    @include('components.sidebar')
-    
-    <!-- Konten Utama -->
-    <div id="main-content" class="flex-1 p-6 overflow-auto sidebar-open">
-        <div class="flex justify-between items-center bg-white p-4 shadow-md rounded-lg">
-            <div class="flex items-center space-x-4">
-                <img src="/images/student-avatar.png" alt="Avatar" class="w-16 h-16 rounded-full">
-                <div>
-                    <h2 class="text-xl font-semibold">Nama Siswa</h2>
-                    <p class="text-gray-500">Siswa</p>
-                </div>
+    <div id="main-content" class="flex-1 p-6 overflow-auto transition-all duration-300">
+        <!-- Header Selamat Datang -->
+        <div class="mt-6 bg-white p-6 rounded-lg shadow-md flex items-center justify-between">
+            <div>
+                <h3 class="text-lg font-semibold">Selamat datang, {{ auth()->user()->name ?? 'Siswa' }}!</h3>
+                <p class="text-gray-600">Silakan gunakan aplikasi ini untuk mengelola magang Anda.</p>
             </div>
-            <div class="flex space-x-4">
-                <a href="{{ route('profile.edit') }}" class="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600">
-                    Edit Profil
-                </a>
-                <form method="POST" action="{{ route('logout') }}">
-                    @csrf
-                    <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">
-                        Logout
-                    </button>
-                </form>
-            </div>
+            <a href="{{ route('profile.edit') }}" class="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600">
+                Edit Profil
+            </a>
         </div>
 
         <!-- Informasi Magang -->
-        <div id="informasi-magang" class="mt-6 bg-white p-6 rounded-lg shadow-md">
-            <h3 class="text-lg font-semibold">Informasi Magang</h3>
+        <div class="mt-6 bg-white p-6 rounded-lg shadow-md">
+            <h3 class="text-lg font-semibold text-blue-900">Informasi Magang</h3>
             <div class="grid grid-cols-2 gap-4 mt-4">
                 <div class="p-4 bg-green-100 rounded-lg">
-                    <p class="font-medium">Nama Perusahaan</p>
-                    <p class="text-green-700">PT Contoh</p>
+                    <h4 class="font-bold">Nama Perusahaan</h4>
+                    <p class="text-green-700">{{ $dataSiswa->nama_perusahaan ?? "Belum Ada" }}</p>
                 </div>
                 <div class="p-4 bg-green-100 rounded-lg">
-                    <p class="font-medium">Posisi Magang</p>
-                    <p class="text-green-700">Web Developer</p>
+                    <h4 class="font-bold">Posisi Magang</h4>
+                    <p class="text-green-700">{{ $dataSiswa->posisi_magang ?? "Belum Ada"}}</p>
+                </div>
+                <div class="p-4 bg-green-100 rounded-lg">
+                    <h4 class="font-bold">Tanggal Mulai</h4>
+                    <p class="text-green-700">{{ $dataSiswa->tanggal_mulai ?? "Belum Ada"}}</p>
+                </div>
+                <div class="p-4 bg-green-100 rounded-lg">
+                    <h4 class="font-bold">Tanggal Selesai</h4>
+                    <p class="text-green-700">{{ $dataSiswa->tanggal_selesai ?? "Belum Ada"}}</p>
                 </div>
             </div>
         </div>
+        
 
-        @include('components.cek-status')
-        @include('components.ajukan-magang')
-        @includeWhen(isset($reports), 'components.unggah-laporan', ['reports' => $reports ?? []])
+        <!-- Riwayat Unggahan Laporan -->
+        <div class="mt-6 bg-white p-6 rounded-lg shadow-md">
+            <h3 class="text-lg font-semibold text-blue-900">Riwayat Unggahan Laporan</h3>
+        
+            @if($reports->isEmpty())
+                <p class="text-gray-500 mt-4">Belum ada laporan yang diunggah.</p>
+            @else
+                <ul class="mt-4 space-y-2">
+                    @foreach ($reports as $report)
+                        <li class="flex justify-between items-center p-3 bg-gray-100 border rounded-md hover:bg-gray-200 transition-all">
+                            <div class="flex flex-col">
+                                <span class="text-gray-800 font-medium">{{ $report->nama_file }}</span>
+                                <span class="text-sm text-gray-600">Status: 
+                                    <strong class="{{ $report->status == 'terkirim' ? 'text-green-600' : 'text-red-600' }}">
+                                        {{ ucfirst($report->status) }}
+                                    </strong>
+                                </span>
+                            </div>
+                            <div class="flex space-x-2">
+                                <a href="{{ asset('storage/' . $report->file_path) }}" target="_blank" class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 flex items-center gap-2 transition-all">
+                                    <i class="fa-solid fa-eye"></i>
+                                </a>
+                                @if($report->status == 'belum dikirim')
+                                    <form method="POST" action="{{ route('report.send', $report->id) }}">
+                                        @csrf
+                                        <button type="submit" class="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600 flex items-center gap-2 transition-all">
+                                            <i class="fa-solid fa-paper-plane"></i>
+                                        </button>
+                                    </form>
+                                @endif
+                                <form method="POST" action="{{ route('report.delete', $report->id) }}">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 flex items-center gap-2 transition-all">
+                                        <i class="fa-solid fa-trash"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </li>
+                    @endforeach
+                </ul>
+            @endif
+        </div>        
     </div>
+@endsection
 
-    <script>
-        function toggleSidebar() {
-            let sidebar = document.getElementById('sidebar');
-            let menuIcon = document.getElementById('menu-icon');
-            let mainContent = document.getElementById('main-content');
-
-            if (sidebar.style.left === "0px" || sidebar.style.left === "") {
-                sidebar.style.left = "-16rem";
-                mainContent.classList.remove('sidebar-open');
-                mainContent.classList.add('sidebar-closed');
-                menuIcon.classList.remove('hidden');
-            } else {
-                sidebar.style.left = "0px";
-                mainContent.classList.remove('sidebar-closed');
-                mainContent.classList.add('sidebar-open');
-                menuIcon.classList.add('hidden');
-            }
+@section('scripts')
+<script>
+    function deleteReport(filename) {
+        if (confirm("Apakah Anda yakin ingin menghapus " + filename + "?")) {
+            alert(filename + " berhasil dihapus.");
+            // Implementasi penghapusan laporan dari database bisa ditambahkan di sini.
         }
-    </script>
-</body>
-</html>
+    }
+
+    function viewReport(filename) {
+        alert("Membuka " + filename);
+        // Implementasi membuka file bisa ditambahkan di sini (misalnya window.open).
+    }
+</script>
+@endsection

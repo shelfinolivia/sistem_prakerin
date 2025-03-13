@@ -1,26 +1,22 @@
-<div id="sidebar" class="w-64 bg-blue-900 text-white p-5 flex flex-col justify-between min-h-screen fixed left-0 transition-all duration-300">
-    <!-- Tombol Toggle -->
-    <div class="absolute top-5 right-5 text-white text-2xl cursor-pointer" onclick="toggleSidebar()">
-        <i class="fa-solid fa-bars"></i>
-    </div>
-
+<!-- Sidebar -->
+<div id="sidebar" class="w-64 bg-blue-900 text-white p-5 flex flex-col justify-between min-h-screen fixed top-0 left-0 transition-transform duration-300 z-50">
     <!-- Menu -->
     <div>
         <h2 class="text-2xl font-bold text-center mt-10">SISWA</h2>
         <ul class="space-y-4 mt-20">
-            <li class="p-2 rounded-md hover:bg-blue-700 sidebar-item" onclick="showSection('dashboard', this)">
-                <a href="{{ route('dashboard') }}" class="block">Dashboard</a>
+            <li class="p-2 rounded-md sidebar-item dashboard">
+                <a href="{{ route('dashboard') }}" class="block" onclick="setActive(this)">Dashboard</a>
             </li>
-            <li class="p-2 rounded-md hover:bg-blue-700 sidebar-item" onclick="showSection('ajukan-magang', this)">
-                <a href="{{ route('internship.ajukan') }}" class="block">Ajukan Magang</a>
+            <li class="p-2 rounded-md sidebar-item">
+                <a href="{{ route('internship.ajukan') }}" class="block" onclick="setActive(this)">Ajukan Magang</a>
             </li>
-            <li class="p-2 rounded-md hover:bg-blue-700 sidebar-item" onclick="showSection('status-pengajuan', this)">
-                <a href="{{ route('internship.status') }}" class="block">Cek Status</a>
+            <li class="p-2 rounded-md sidebar-item">
+                <a href="{{ route('internship.status') }}" class="block" onclick="setActive(this)">Cek Status</a>
             </li>
-            <li class="p-2 rounded-md hover:bg-blue-700 sidebar-item" onclick="showSection('unggah-laporan', this)">
-                <a href="{{ route('report.form') }}" class="block">Unggah Laporan</a>
+            <li class="p-2 rounded-md sidebar-item">
+                <a href="{{ route('report.form') }}" class="block" onclick="setActive(this)">Unggah Laporan</a>
             </li>
-        </ul>
+        </ul>        
     </div>
 
     <!-- Tombol Logout -->
@@ -28,74 +24,111 @@
         <form method="POST" action="{{ route('logout') }}">
             @csrf
             <button type="submit" class="w-full text-left p-2">Logout</button>
-        </form>            
+        </form>
     </div>
 </div>
 
-<!-- Tombol Menu saat Sidebar tertutup -->
-<div id="menu-icon" class="fixed left-5 top-5 text-2xl text-white bg-blue-900 p-3 rounded-full cursor-pointer transition-all duration-300 hidden" onclick="toggleSidebar()">
+<!-- Tombol Menu (Bars) -->
+<div id="menu-icon" class="fixed left-5 top-5 text-2xl text-white bg-blue-900 p-3 rounded-full cursor-pointer transition-all duration-300 z-50" onclick="toggleSidebar()">
     <i class="fa-solid fa-bars"></i>
 </div>
 
 <!-- Script untuk Sidebar -->
 <script>
-    function toggleSidebar() {
-        let sidebar = document.getElementById('sidebar');
-        let menuIcon = document.getElementById('menu-icon');
+    document.addEventListener("DOMContentLoaded", function () {
+    let sidebar = document.getElementById('sidebar');
+    let menuIcon = document.getElementById('menu-icon');
 
-        if (sidebar.classList.contains('-translate-x-full')) {
-            sidebar.classList.remove('-translate-x-full');
-            menuIcon.classList.add('hidden'); // Sembunyikan ikon menu saat sidebar muncul
-        } else {
-            sidebar.classList.add('-translate-x-full');
-            menuIcon.classList.remove('hidden'); // Tampilkan ikon menu saat sidebar tersembunyi
+    // Pastikan sidebar muncul saat pertama kali membuka halaman
+    sidebar.classList.remove("-translate-x-full");
+
+    // Hapus semua kelas aktif terlebih dahulu
+    document.querySelectorAll(".sidebar-item").forEach(item => {
+        item.classList.remove("active");
+    });
+
+    // Cek URL saat ini dan aktifkan menu yang sesuai
+    let currentUrl = window.location.href;
+    document.querySelectorAll(".sidebar-item a").forEach(link => {
+        if (link.href === currentUrl) {
+            link.parentElement.classList.add("active");
         }
+    });
+
+    // Cek apakah halaman saat ini adalah Dashboard
+    let dashboardLink = document.querySelector(".sidebar-item.dashboard a");
+    if (dashboardLink && dashboardLink.href === currentUrl) {
+        dashboardLink.parentElement.classList.add("active");
     }
 
-    // function showSection(sectionId, element) {
-    //     // Sembunyikan semua section
-    //     document.querySelectorAll('.section').forEach(sec => sec.style.display = 'none');
+    // Tambahkan event listener untuk setiap menu sidebar
+    document.querySelectorAll(".sidebar-item a").forEach(link => {
+        link.addEventListener("click", function () {
+            setActive(this);
+        });
+    });
+});
 
-    //     // Tampilkan section yang diklik
-    //     let selectedSection = document.getElementById(sectionId);
-    //     if (selectedSection) {
-    //         selectedSection.style.display = 'block';
-    //     }
+function setActive(element) {
+    // Hapus kelas aktif dari semua item
+    document.querySelectorAll(".sidebar-item").forEach(item => {
+        item.classList.remove("active");
+    });
 
-    //     // Hapus kelas aktif dari semua item sidebar
-    //     document.querySelectorAll('.sidebar-item').forEach(item => {
-    //         item.classList.remove('bg-blue-800', 'text-white');
-    //         item.classList.add('hover:bg-blue-700'); // Tambahkan efek hover kembali
-    //     });
+    // Tambahkan kelas aktif ke elemen yang diklik
+    element.parentElement.classList.add("active");
 
-    //     // Tambahkan kelas aktif ke item yang diklik
-    //     element.classList.add('bg-blue-800', 'text-white');
-    //     element.classList.remove('hover:bg-blue-700'); // Hapus hover agar tidak konflik dengan warna aktif
+    // Simpan menu yang aktif di localStorage agar tetap aktif saat reload halaman
+    localStorage.setItem("activeMenu", element.getAttribute("href"));
+}
 
-    //     // Simpan state aktif ke localStorage agar tetap saat refresh
-    //     localStorage.setItem('activeSection', sectionId);
-    // }
 
-    // // Pastikan dashboard terlihat saat halaman pertama kali dimuat
-    // document.addEventListener("DOMContentLoaded", function () {
-    //     let savedSection = localStorage.getItem('activeSection') || 'dashboard'; // Ambil dari localStorage atau default ke dashboard
-    //     let activeItem = document.querySelector(`.sidebar-item[onclick*="${savedSection}"]`);
-        
-    //     if (activeItem) {
-    //         showSection(savedSection, activeItem);
-    //     }
-    // });
+
 </script>
 
-<!-- CSS -->
 <style>
-    .hidden {
-        display: none;
-    }
-    #sidebar {
-        width: 16rem; /* 64px * 4 */
-    }
-    .-translate-x-full {
-        transform: translateX(-100%);
-    }
+    /* Efek hover untuk semua sidebar-item */
+.sidebar-item {
+    transition: background-color 0.3s, color 0.3s;
+}
+
+/* Hover untuk semua menu sidebar */
+.sidebar-item:hover {
+    background-color: #2563eb !important;
+    color: white !important;
+}
+
+/* Warna menu aktif */
+.sidebar-item.active {
+    background-color: #1d4ed8 !important;
+    color: white !important;
+}
+
+/* Pastikan Dashboard tidak selalu aktif jika bukan di halaman Dashboard */
+.sidebar-item.dashboard {
+    background-color: transparent !important;
+}
+
+/* Dashboard hanya aktif jika berada di halaman Dashboard */
+.sidebar-item.dashboard.active {
+    background-color: #1d4ed8 !important;
+}
+
+/* Dashboard tetap bisa di-hover */
+.sidebar-item.dashboard:hover {
+    background-color: #2563eb !important;
+}
+
+/* Saat sidebar tersembunyi, geser ke kiri */
+#sidebar.-translate-x-full {
+    transform: translateX(-100%);
+}
+
+/* Animasi agar lebih halus */
+#sidebar {
+    transition: transform 0.3s ease-in-out;
+}
+
+
+
 </style>

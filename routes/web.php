@@ -8,6 +8,11 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\PengajuanSiswaController;
+
+Route::get('/', function () {
+    return redirect()->route('login');
+});
 
 // Route Login & Register
 Route::post('/login', [LoginController::class, 'login'])->name('login.post');
@@ -34,8 +39,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Route untuk Unggah Laporan
     Route::get('/report/upload', [ReportController::class, 'showForm'])->name('report.form');
     Route::post('/report/upload', [ReportController::class, 'upload'])->name('report.upload');
-//     Route::delete('/report/{id}', [ReportController::class, 'delete'])->name('report.delete');
-//     Route::post('/report/{id}/send', [ReportController::class, 'send'])->name('report.send');
+    Route::post('/report/send/{id}', [ReportController::class, 'send'])->name('report.send');
+    Route::delete('/report/delete/{id}', [ReportController::class, 'delete'])->name('report.delete');
+
 });
+
+Route::post('/internship/apply', [PengajuanSiswaController::class, 'store'])->name('internship.apply');
 
 require __DIR__.'/auth.php';

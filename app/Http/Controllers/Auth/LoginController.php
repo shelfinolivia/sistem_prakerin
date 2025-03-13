@@ -23,7 +23,7 @@ class LoginController extends Controller
             if ($user->role === 'admin') {
                 return redirect()->route('filament.admin.pages.dashboard'); // Redirect ke dashboard admin Filament
             } else {
-                return redirect()->route('dashboard'); // Redirect ke halaman siswa
+                return redirect()->route('dashboard.siswa'); // Redirect ke dashboard siswa
             }
         }
 
@@ -33,6 +33,9 @@ class LoginController extends Controller
     public function logout(Request $request)
     {
         Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+        
         return redirect()->route('login');
     }
 }
