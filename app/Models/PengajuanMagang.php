@@ -12,7 +12,7 @@ class PengajuanMagang extends Model
     protected $table = 'pengajuan_magangs';
 
     protected $fillable = [
-        'user_id',
+        'siswa_id',
         'nama_perusahaan',
         'posisi',
         'tanggal_mulai',

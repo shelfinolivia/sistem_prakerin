@@ -31,7 +31,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // Route untuk Ajukan Magang
     Route::get('/internship/ajukan', [InternshipController::class, 'create'])->name('internship.ajukan');
-    Route::post('/internship/ajukan', [InternshipController::class, 'apply'])->name('internship.apply');
+    Route::post('/internship/ajukan', [PengajuanSiswaController::class, 'store'])->name('internship.apply');
 
     // Route untuk Cek Status Magang
     Route::get('/internship/status', [InternshipController::class, 'status'])->name('internship.status');

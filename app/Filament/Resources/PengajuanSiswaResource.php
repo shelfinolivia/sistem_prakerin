@@ -77,9 +77,8 @@ class PengajuanSiswaResource extends Resource
                             'status' => 'diterima',
                         ]);
 
-                        dd($record);
                         StatusSiswa::create([
-                            'pengajuan_siswa_id' => 1,
+                            'pengajuan_siswa_id' => $record->siswa_id,
                             'nama_siswa' => $record->nama_siswa,
                             'kelas' => $record->kelas,
                             'nama_perusahaan' => $data['perusahaan'],

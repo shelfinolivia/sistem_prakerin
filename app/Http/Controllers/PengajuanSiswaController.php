@@ -5,20 +5,22 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\PengajuanSiswa;
 use App\Models\StatusSiswa;
+use Illuminate\Support\Facades\Auth;
 
 class PengajuanSiswaController extends Controller
 {
     public function store(Request $request)
     {
         $request->validate([
-            'nama_siswa' => 'required|string',
+            'id'=> 'required',
             'kelas' => 'required|string',
             'nama_perusahaan' => 'required|string',
             'posisi_magang' => 'required|string',
         ]);
 
         PengajuanSiswa::create([
-            'nama_siswa' => $request->nama_siswa,
+            'nama_siswa' => Auth::user()->name,
+            'siswa_id' => $request->id,
             'kelas' => $request->kelas,
             'nama_perusahaan' => $request->nama_perusahaan,
             'posisi_magang' => $request->posisi_magang,

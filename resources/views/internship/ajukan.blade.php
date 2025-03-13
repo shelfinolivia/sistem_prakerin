@@ -15,12 +15,7 @@
 
         <form id="form-ajukan-magang" action="{{ route('internship.apply') }}" method="POST">
             @csrf
-
-            <div class="mb-4">
-                <label class="block mb-2 font-medium">Nama Siswa</label>
-                <input type="text" name="nama_siswa" class="w-full p-2 border rounded" placeholder="Masukkan nama siswa" required>
-            </div>
-
+            <input type="hidden" name="id" value="{{ Auth::user()->id }}">
             <div class="mb-4">
                 <label class="block mb-2 font-medium">Kelas</label>
                 <input type="text" name="kelas" class="w-full p-2 border rounded" placeholder="Masukkan kelas" required>

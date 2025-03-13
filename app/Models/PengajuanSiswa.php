@@ -12,6 +12,7 @@ class PengajuanSiswa extends Model
     protected $table = 'pengajuan_siswa';
 
     protected $fillable = [
+        'siswa_id',
         'nama_siswa',
         'kelas',
         'nama_perusahaan',
